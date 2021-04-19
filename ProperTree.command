@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys, os, binascii, base64, json, re, subprocess
+import sys, os, binascii, base64, json, re, subprocess, webbrowser
 from collections import OrderedDict
 try:
     import Tkinter as tk
@@ -19,6 +19,9 @@ from Scripts import plist, plistwindow
 
 class ProperTree:
     def __init__(self, plists = []):
+        self.version = 1.0
+        self.repo = "https://github.com/corpnewt/ProperTree"
+        self.about_text = "About ProperTree ver. {}".format(self.version)
         # Create the new tk object
         self.tk = tk.Tk()
         self.tk.title("Convert Values")
@@ -244,6 +247,8 @@ class ProperTree:
             file_menu.add_command(label="Toggle Find/Replace Pane (Cmd+F)",command=self.hide_show_find)
             file_menu.add_command(label="Toggle Plist/Data/Int Type Pane (Cmd+P)",command=self.hide_show_type)
             file_menu.add_separator()
+            file_menu.add_command(label=self.about_text, command=self.about)
+            file_menu.add_separator()
             file_menu.add_command(label="Quit (Cmd+Q)", command=self.quit)
             self.tk.config(menu=main_menu)
 
@@ -326,6 +331,9 @@ class ProperTree:
 
         # Start our run loop
         tk.mainloop()
+
+    def about(self):
+        webbrowser.open_new(self.repo)
 
     def check_dark_mode(self):
         check_dark = self.get_dark()

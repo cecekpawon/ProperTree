@@ -116,7 +116,7 @@ class EntryPopup(tk.Entry):
         if not len(get):
             return 'break'
         self.clipboard_clear()
-        self.clipboard_append(get)
+        self.clipboard_append(self.convert_tab_to_spaces(get))
         self.update()
         return 'break'
 
@@ -365,6 +365,8 @@ class PlistWindow(tk.Toplevel):
             file_menu.add_separator()
             file_menu.add_command(label="Toggle Find/Replace Pane",command=self.hide_show_find, accelerator="Ctrl+F")
             file_menu.add_command(label="Toggle Plist/Data/Int Type Pane",command=self.hide_show_type, accelerator="Ctrl+P")
+            file_menu.add_separator()
+            file_menu.add_command(label=self.controller.about_text, command=self.controller.about)
             file_menu.add_separator()
             file_menu.add_command(label="Quit", command=self.controller.quit, accelerator="Ctrl+Q")
             self.config(menu=main_menu)
@@ -1672,6 +1674,9 @@ class PlistWindow(tk.Toplevel):
             return self.save_plist()
         return answer
 
+    def convert_tab_to_spaces(self, data, spaces="  "):
+        return data.replace("\t", spaces)
+
     def save_plist(self, event=None):
         # Pass the current plist to the save_plist_as function
         return self.save_plist_as(event, self.current_plist)
@@ -1733,7 +1738,7 @@ class PlistWindow(tk.Toplevel):
                 # At this point, we have a list of lines - with all <data> tags on the same line
                 # let's write to file
                 with open(temp_file,"wb") as f:
-                    temp_string = "\n".join(new_plist)
+                    temp_string = self.convert_tab_to_spaces("\n".join(new_plist))
                     if sys.version_info >= (3,0):
                         temp_string = temp_string.encode("utf-8")
                     f.write(temp_string)
@@ -1802,7 +1807,7 @@ class PlistWindow(tk.Toplevel):
             clipboard_string = plist.dumps(self.nodes_to_values(node,None),sort_keys=self.controller.settings.get("sort_dict",False))
             # Get just the values
             self.clipboard_clear()
-            self.clipboard_append(clipboard_string)
+            self.clipboard_append(self.convert_tab_to_spaces(clipboard_string))
         except:
             pass
 
@@ -1821,7 +1826,7 @@ class PlistWindow(tk.Toplevel):
                 plist_data = plist_data[0]
             clipboard_string = plist.dumps(plist_data,sort_keys=self.controller.settings.get("sort_dict",False))
             self.clipboard_clear()
-            self.clipboard_append(clipboard_string)
+            self.clipboard_append(self.convert_tab_to_spaces(clipboard_string))
         except:
             pass
 
@@ -1830,7 +1835,7 @@ class PlistWindow(tk.Toplevel):
             clipboard_string = plist.dumps(self.nodes_to_values(self.get_root_node(),None),sort_keys=self.controller.settings.get("sort_dict",False))
             # Get just the values
             self.clipboard_clear()
-            self.clipboard_append(clipboard_string)
+            self.clipboard_append(self.convert_tab_to_spaces(clipboard_string))
         except:
             pass
 
@@ -1854,7 +1859,7 @@ class PlistWindow(tk.Toplevel):
             if element_type:
                 cb_list.insert(1,"<{}>".format(element_type))
                 cb_list.insert(3,"</{}>".format(element_type))
-            cb = "\n".join(cb_list)
+            cb = self.convert_tab_to_spaces("\n".join(cb_list))
             try:
                 plist_data = plist.loads(cb,dict_type=dict if self.controller.settings.get("sort_dict",False) else OrderedDict)
             except Exception as e:
