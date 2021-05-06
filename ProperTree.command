@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import sys, os, binascii, base64, json, re, subprocess, webbrowser
 
-if str(sys.platform) == "darwin" and sys.version_info.major == 2 and os.popen('which python3').read():
-    os.execl(sys.executable, 'python3', __file__)
+if str(sys.platform) == "darwin":
+    if sys.version_info.major == 2 and os.popen('which python3').read():
+        os.execl(sys.executable, 'python3', __file__)
+    print("Python: {}".format(sys.version))
 
 from collections import OrderedDict
 try:
